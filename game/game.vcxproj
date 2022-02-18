@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameFunctions.cpp" />
+    <ClCompile Include="Pixie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="alien.bmp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameHeader.h" />
+    <ClInclude Include="Pixie.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

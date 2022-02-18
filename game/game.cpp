@@ -1,63 +1,45 @@
+//===================================================== 
+// Daniel Ndayegamiye
+// February 21, 2022
+// file name: game.cpp
+// Programming Assignment #3
+// Description: this is the main file for this project 
+//=====================================================
+
 #include "gameHeader.h"
-/*
-* Put your own file documentation here. 
-*
-*/
+//***********************************************************************************
+// Function main - the main function to be compiled
+// There are no input for it
+// return value – the function returns 0 so that the compiler will know the end of the program. 
 
 int main()
 {
 	// Create the window for graphics. 
 	//  The "aliens" is the text in the title bar on the window. 
 	RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aliens!");
-	
+
 	// Limit the framerate to 60 frames per second
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(FRAME_RATE_LIMIT);
 
-	// load textures from file into memory. This doesn't display anything yet.
-	// Notice we do this *before* going into animation loop.
+		
+	// Create and Initialize a pixie class for the missile
+	Pixie missile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
 
-	// a Texture is an image of pixels. You can load a .png file
-	//   or a bitmap file.  These files are in the "Resource files" section of
-	//   the solution explorer. 
-	Texture shipTexture;
-	if (!shipTexture.loadFromFile("ship.png"))
-	{
-		cout << "Unable to load ship texture!" << endl;
-		exit(EXIT_FAILURE);
-	}
+	// Create and Initialize a pixie class for the alien
+	Pixie alien("alien.bmp", ALIEN_X_POSITION, ALIEN_Y_POSITION, UNDEFINED_PIXIE);
 
-	// We use the star texture as a background for space in the window.
-	//  it makes it more interesting. :)
-	Texture starsTexture;
-	if (!starsTexture.loadFromFile("stars.jpg"))
-	{
-		cout << "Unable to load stars texture!" << endl;
-		exit(EXIT_FAILURE);
-	}
-	// An alien bitmap is provided in the Resource Files... 
-	//  Perhaps you'll want to make your own alien though...
-
-	// A sprite is a thing we can draw and manipulate on the screen.
-	// We have to give it a "texture" to specify what it looks like
-
-	Sprite background; // the background is a sprite, though we'll never move it around. 
-	background.setTexture(starsTexture); // load the starsTexture object into the sprite.
-	// The texture file is 640x480, so scale it up a little to cover 800x600 window
-	background.setScale(1.5, 1.5);
-
-	// create sprite and texture it
-	Sprite ship;
-	ship.setTexture(shipTexture);
-
-	// *** You will have to code to load the  texture for the missile here. 
-	// Then create the missile Sprite...  
-
+	// create pixie for the ship
 	// initial position of the ship will be approx middle of screen
 	float shipX = window.getSize().x / 2.0f;
-	float shipY = window.getSize().y / 2.0f;
-	ship.setPosition(shipX, shipY);
+	float shipY = window.getSize().y * 0.8f;
+	Pixie ship("ship.png", shipX, shipY, PLAYER_SHIP_PIXIE);
+
+	// Create and initialize a pixie object for the background
+	Pixie background("stars.jpg", DEFAULT_COORDINATE, DEFAULT_COORDINATE, BACKGROUND_PIXIE);
+	background.setScale(BACKGROUND_SCALE, BACKGROUND_SCALE);
 
 	bool isMissileInFlight = false; // used to know if a missile is 'on screen'. 
+	bool isLimit = false; // used to know if the alien reached the edges of the screen
 
 	while (window.isOpen())
 	{
@@ -76,10 +58,10 @@ int main()
 				if (event.key.code == Keyboard::Space && !isMissileInFlight)
 				{
 					isMissileInFlight = true;
-					// You add the code to initialize missile position
-					//  You should have created a missile pixie 
-					// above the main loop, maybe around line 60? 
-				}
+					//the code to initialize missile position above the ship
+					Vector2f pos = ship.getSprite().getPosition();
+					missile.setPosition(pos.x + 10, pos.y - 15);
+					}
 			}
 		}
 
@@ -91,28 +73,61 @@ int main()
 
 		// draw background first, so everything that's drawn later 
 		// will appear on top of background
-		window.draw(background);
+		background.drawPixie(window);
 
 		//detect key presses to update the position of the ship. 
 		//See moveShip() function above.
 		moveShip(ship);
+		
+		int alienX = static_cast<int>(alien.getSprite().getPosition().x); // this variable holds the position of the alien 
+
+		//This condition checks to see if the position is less than 0 and the alien goes to the left
+		if (alienX > 0 && !isLimit)
+			alien.move(-ALIEN_DISTANCE, 0);//this moves the alien to the left
+		else
+		{
+			//when the alien reachs 0, it goes back until it reaches the other edge
+			isLimit = true; //This becomes true until the alien hits the other edge of the screen
+			//This condition check to see if the alien reached the far right edge so it can go back to the left
+			if (alienX < (WINDOW_WIDTH - 35))
+				alien.move(ALIEN_DISTANCE, 0);
+			else
+				isLimit = false; // this boolean is set to false in case the alien hits the right edge
+
+		}
+		// draw the alien on the screen
+		alien.drawPixie(window);
+
+		// this two variables are created so that we can learn from them if the missile hits the alien
+		FloatRect missileBounds = missile.getSprite().getGlobalBounds();
+		FloatRect enemyBounds = alien.getSprite().getGlobalBounds();
 
 		// draw the ship on top of background 
-		// (the ship from previous frame was erased when we drew background)
-		window.draw(ship);
+		ship.drawPixie(window);
 
+		// this condition is for when the missile is in flight to move it up
 		if (isMissileInFlight)
 		{
-			// ***code goes here to handle a missile in flight
-			// 
-			// Draw the missile, 
 			// move it "up" the screen by decreasing 'y' and then use 'setPosition()' 
 			//     to place it at its new location. 
+			missile.move(0, -DISTANCE);
 
-			// Don't forget to draw it after you change the missiles location. 
+			int locationY = static_cast<int>(missile.getSprite().getPosition().y);// the y location of the missile
 
-			// Don't forget to see if the missile is off screen!
+			//to see if the missile is off screen!
 			// if it's moved off the top, set the boolean to false!
+			if (locationY < 0)
+			{
+				isMissileInFlight = false;
+			}
+			else if (missileBounds.intersects(enemyBounds))//THE MISSILE HITS THE ALIEN
+			{
+				// Display 'hit' and set the boolean to false
+				cout << "HIT\n\n";
+				isMissileInFlight = false;
+			}
+			else
+				missile.drawPixie(window);// Draw the missile,
 		}
 
 		// end the current frame; this makes everything that we have 
