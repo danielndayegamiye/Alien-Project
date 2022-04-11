@@ -28,8 +28,12 @@ const int DEFAULT_COORDINATE = 0;// this variable sets the coordinate to 0 as de
 const int ALIEN_X_POSITION = 200;// this variable holds the x position of the alien
 const int ALIEN_Y_POSITION = 100;// this variable holds the y position of the alien
 const float BACKGROUND_SCALE = 1.5f;// this variable holds the scale used for the background
-const float ALIEN_DISTANCE = 4.0f;// when the alien moves it moves 4 pixels at a time
+const float ALIEN_DISTANCE = 3.5f;// when the alien moves it moves 4 pixels at a time
+
+#include "Alien.h"
+#include "AlienArmy.h"
 
 // Game Functions
 void moveShip(Sprite& ship); 
 void moveShip(Pixie& ship);
+void moveAlien(Pixie& alien, bool& isLimit);

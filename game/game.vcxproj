@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlienArmy.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameFunctions.cpp" />
     <ClCompile Include="Pixie.cpp" />
@@ -161,6 +162,8 @@
     <Image Include="stars.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Alien.h" />
+    <ClInclude Include="AlienArmy.h" />
     <ClInclude Include="gameHeader.h" />
     <ClInclude Include="Pixie.h" />
   </ItemGroup>

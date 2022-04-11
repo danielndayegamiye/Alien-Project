@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include "gameHeader.h"
 //======================================================================
 // Daniel Ndayegamiye
 // February 21, 2022
@@ -28,10 +28,12 @@ public:
 
 	//setters
 	void setType(int type) { pixieType = type; }
-	void setPixieX(float x) { pixieX = x; }
-	void setPixieY(float y) { pixieY = y; }
+	void setPixieX(float x) { pixieX = x;	pixieSprite.setPosition(pixieX, pixieY);}
+	void setPixieY(float y) { pixieY = y; 	pixieSprite.setPosition(pixieX, pixieY);}
 	void setScale(float xScale, float yScale);
 	void setPosition(float x, float y);
+	void setNext(Pixie* ptr) { nextPixie = ptr; }
+	void setPrevious(Pixie* ptr) { previousPixie = ptr; }
 
 	//getters
 	float getPixieX() { return pixieSprite.getPosition().x; }

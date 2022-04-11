@@ -26,8 +26,9 @@ int main()
 	Pixie missile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
 
 	// Create and Initialize a pixie class for the alien
-	Pixie alien("alien.bmp", ALIEN_X_POSITION, ALIEN_Y_POSITION, UNDEFINED_PIXIE);
-
+	Alien alien;
+	AlienArmy army;
+	//army.drawList(window);
 	// create pixie for the ship
 	// initial position of the ship will be approx middle of screen
 	float shipX = window.getSize().x / 2.0f;
@@ -39,7 +40,8 @@ int main()
 	background.setScale(BACKGROUND_SCALE, BACKGROUND_SCALE);
 
 	bool isMissileInFlight = false; // used to know if a missile is 'on screen'. 
-	bool isLimit = false; // used to know if the alien reached the edges of the screen
+	//bool isLimit = false; // used to know if the alien reached the edges of the screen
+	int counter = 0;
 
 	while (window.isOpen())
 	{
@@ -79,24 +81,11 @@ int main()
 		//See moveShip() function above.
 		moveShip(ship);
 		
-		int alienX = static_cast<int>(alien.getSprite().getPosition().x); // this variable holds the position of the alien 
-
-		//This condition checks to see if the position is less than 0 and the alien goes to the left
-		if (alienX > 0 && !isLimit)
-			alien.move(-ALIEN_DISTANCE, 0);//this moves the alien to the left
-		else
-		{
-			//when the alien reachs 0, it goes back until it reaches the other edge
-			isLimit = true; //This becomes true until the alien hits the other edge of the screen
-			//This condition check to see if the alien reached the far right edge so it can go back to the left
-			if (alienX < (WINDOW_WIDTH - 35))
-				alien.move(ALIEN_DISTANCE, 0);
-			else
-				isLimit = false; // this boolean is set to false in case the alien hits the right edge
-
-		}
+		//alien.moveAlien();
+		army.moveArmy(counter);
 		// draw the alien on the screen
-		alien.drawPixie(window);
+		//alien.drawPixie(window);
+		army.drawList(window);
 
 		// this two variables are created so that we can learn from them if the missile hits the alien
 		FloatRect missileBounds = missile.getSprite().getGlobalBounds();
@@ -105,6 +94,9 @@ int main()
 		// draw the ship on top of background 
 		ship.drawPixie(window);
 
+		army.checkShipY(ship);
+
+		//army.shootMissile(3, missile, window);
 		// this condition is for when the missile is in flight to move it up
 		if (isMissileInFlight)
 		{
@@ -120,13 +112,13 @@ int main()
 			{
 				isMissileInFlight = false;
 			}
-			else if (missileBounds.intersects(enemyBounds))//THE MISSILE HITS THE ALIEN
+			else if (army.MissileChecking(missile))//THE MISSILE HITS THE ALIEN
 			{
 				// Display 'hit' and set the boolean to false
 				cout << "HIT\n\n";
 				isMissileInFlight = false;
 			}
-			else
+			
 				missile.drawPixie(window);// Draw the missile,
 		}
 

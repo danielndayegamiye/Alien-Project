@@ -80,6 +80,7 @@ void Pixie::move(float x, float y)
 	pixieX += x;
 	pixieY += y;
 	pixieSprite.setPosition(pixieX, pixieY);
+
 }
 
 //***********************************************************************************
@@ -107,3 +108,4 @@ void Pixie::setPosition(float x, float y)
 	pixieY = y;
 	pixieSprite.setPosition(x, y);
 }
+
