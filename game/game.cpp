@@ -14,6 +14,7 @@
 
 int main()
 {
+	srand(time(0));
 	// Create the window for graphics. 
 	//  The "aliens" is the text in the title bar on the window. 
 	RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aliens!");
@@ -35,6 +36,7 @@ int main()
 	float shipY = window.getSize().y * 0.8f;
 	Pixie ship("ship.png", shipX, shipY, PLAYER_SHIP_PIXIE);
 
+
 	// Create and initialize a pixie object for the background
 	Pixie background("stars.jpg", DEFAULT_COORDINATE, DEFAULT_COORDINATE, BACKGROUND_PIXIE);
 	background.setScale(BACKGROUND_SCALE, BACKGROUND_SCALE);
@@ -42,6 +44,10 @@ int main()
 	bool isMissileInFlight = false; // used to know if a missile is 'on screen'. 
 	//bool isLimit = false; // used to know if the alien reached the edges of the screen
 	int counter = 0;
+
+	bool isAlien = false;
+	Pixie alienMissile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
+	int counterMissile = 70;
 
 	while (window.isOpen())
 	{
@@ -63,10 +69,28 @@ int main()
 					//the code to initialize missile position above the ship
 					Vector2f pos = ship.getSprite().getPosition();
 					missile.setPosition(pos.x + 10, pos.y - 15);
-					}
+				}
 			}
 		}
+		if (!isAlien)
+		{
+			//counterMissile += 50;
+			alienMissile.setPosition(army.getAlienX() - 10, army.getAlienY() + 50);
+			isAlien = true;
+		}
+		else if (alienMissile.getPixieY()>=WINDOW_HEIGHT)
+		{
+			isAlien = false;
+		}
 
+		FloatRect missileAlienBounds = alienMissile.getSprite().getGlobalBounds();
+		FloatRect shipBounds = ship.getSprite().getGlobalBounds();
+		if (shipBounds.intersects(missileAlienBounds))
+		{
+			isAlien = false;
+			cout << "SHIP HIT!!!!!CAREFUL MOVE!!!\n\n";
+		}
+		
 		//===========================================================
 		// Everything from here to the end of the loop is where you put your
 		// code to produce ONE frame of the animation. The next iteration of the loop will
@@ -95,6 +119,12 @@ int main()
 		ship.drawPixie(window);
 
 		army.checkShipY(ship);
+
+
+		//army.launchMissile(window, alienMissile);
+		alienMissile.move(0,DISTANCE);
+		alienMissile.drawPixie(window);
+
 
 		//army.shootMissile(3, missile, window);
 		// this condition is for when the missile is in flight to move it up

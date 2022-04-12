@@ -9,6 +9,7 @@
 
 // includes go below
 #include <iostream>
+#include <time.h>
 using namespace std;
 // these two lines are specific to the SFML graphics library. 
 #include <SFML/Graphics.hpp>
@@ -32,6 +33,7 @@ const float ALIEN_DISTANCE = 3.5f;// when the alien moves it moves 4 pixels at a
 
 #include "Alien.h"
 #include "AlienArmy.h"
+
 
 // Game Functions
 void moveShip(Sprite& ship); 

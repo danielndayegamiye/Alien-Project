@@ -8,6 +8,9 @@ private:
 	Alien* head;
 	bool isLimit;
 	bool isMissileInFlight;
+	int countAlien;
+	int missileX;
+	int missileY;
 public:
 	AlienArmy()
 	{
@@ -22,6 +25,9 @@ public:
 		}
 		isLimit = false;
 		isMissileInFlight = false;
+		countAlien = 10;
+		missileX = 0;
+		missileY = 0;
 	}
 
 	void append(Alien* newNodePtr) 
@@ -143,6 +149,7 @@ public:
 		{
 			nodePtr = head->getNext();
 			delete head;
+			countAlien--;
 			head = nodePtr;
 		}
 		else
@@ -165,6 +172,7 @@ public:
 			{
 				previousNode->setNext(nodePtr->getNext());
 				delete nodePtr;
+				countAlien--;
 			}
 		}
 	}
@@ -228,6 +236,28 @@ public:
 		}
 	}
 	
+	Alien* getHead() { return head; }
+	
+	int getAlienX()
+	{
+		Alien* alienPtr = head;
+		int number = rand() % countAlien + 2;
+		//cout << number << endl;
+		while (alienPtr->getNext()!=nullptr)
+		{
+			if (number==alienPtr->getID())
+			{
+				missileY = alienPtr->getPixieY();
+				return alienPtr->getPixieX();
+			}
+			alienPtr = alienPtr->getNext();
+		}
 
+	}
+	
+	int getAlienY()
+	{
+		return missileY;
+	}
 };
 
