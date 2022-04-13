@@ -14,7 +14,7 @@
 
 int main()
 {
-	srand(time(0));
+	srand(time(0)); // Randomize
 	// Create the window for graphics. 
 	//  The "aliens" is the text in the title bar on the window. 
 	RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "aliens!");
@@ -52,7 +52,7 @@ int main()
 	// creating the pixie for the missile thrown by the army
 	Pixie alienMissile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
 
-	int numberOfLives = 10;// this variable holds the total number of lives of the ship
+	int numberOfLives = 3;// this variable holds the total number of lives of the ship
 
 	while (window.isOpen())
 	{

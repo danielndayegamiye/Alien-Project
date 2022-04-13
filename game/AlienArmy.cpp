@@ -257,4 +257,3 @@ bool AlienArmy::isListEmpty()
 	else
 		return false;
 }
-
