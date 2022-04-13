@@ -1,38 +1,32 @@
 #pragma once
 #include "gameHeader.h"
+//======================================================================
+// Daniel Ndayegamiye
+// April 22, 2022
+// file name: Alien.h
+// Programming Assignment #8
+// Description: this file holds the class declaration for the Alien class
+//=======================================================================
+
+// This class is derived from the Pixie Class and holds the data for the alien
 class Alien:public Pixie
 {
 private:
-	bool isLimit;
-	Alien* nextPointer;
+	bool isLimit; // used to know if the alien reached the edges of the screen
+	Alien* nextPointer;// this pointer will hold the next node in the linked list
 public:
+	// default constructor
     Alien():Pixie("alien.bmp", ALIEN_X_POSITION, ALIEN_Y_POSITION, UNDEFINED_PIXIE)
     {
 		isLimit = false;
 		nextPointer = nullptr;
     }
-	void moveAlien()
-	{
-		int alienX = static_cast<int>(this->getSprite().getPosition().x); // this variable holds the position of the alien 
 
-			//This condition checks to see if the position is less than 0 and the alien goes to the left
-		if (alienX > 0 && !isLimit)
-			this->move(-ALIEN_DISTANCE, 0);//this moves the alien to the left
-		else
-		{
-			//when the alien reachs 0, it goes back until it reaches the other edge
-			isLimit = true; //This becomes true until the alien hits the other edge of the screen
-			//This condition check to see if the alien reached the far right edge so it can go back to the left
-			if (alienX < (WINDOW_WIDTH - 35))
-				this->move(ALIEN_DISTANCE, 0);
-			else
-				isLimit = false; // this boolean is set to false in case the alien hits the right edge
-		}
-	}
-	void drawPixie(RenderWindow& window)
-	{
-		window.draw(this->getSprite());
-	}
+	void moveAlien();
+
+	void drawPixie(RenderWindow& window);
+
+	//setters and getters
 	Alien* getNext() { return nextPointer; }
 	void setNext(Alien* ptr) { nextPointer = ptr; }
 };

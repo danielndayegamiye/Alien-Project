@@ -27,7 +27,7 @@ int main()
 	Pixie missile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
 
 	// Create and Initialize a pixie class for the alien
-	Alien alien;
+	//Alien alien;
 	AlienArmy army;
 	//army.drawList(window);
 	// create pixie for the ship
@@ -36,18 +36,23 @@ int main()
 	float shipY = window.getSize().y * 0.8f;
 	Pixie ship("ship.png", shipX, shipY, PLAYER_SHIP_PIXIE);
 
+	int missileCoordinateX;
+	int missileCoordinateY;
+
 
 	// Create and initialize a pixie object for the background
 	Pixie background("stars.jpg", DEFAULT_COORDINATE, DEFAULT_COORDINATE, BACKGROUND_PIXIE);
 	background.setScale(BACKGROUND_SCALE, BACKGROUND_SCALE);
 
 	bool isMissileInFlight = false; // used to know if a missile is 'on screen'. 
-	//bool isLimit = false; // used to know if the alien reached the edges of the screen
-	int counter = 0;
+	
+	int counter = 0;// this variable will be used to increment the height of the army every time it touches the right edge
 
-	bool isAlien = false;
+	bool isAlien = false; // this boolean checks to see if the missile shot by the alien is still on the screen
+	// creating the pixie for the missile thrown by the army
 	Pixie alienMissile("missile.bmp", DEFAULT_COORDINATE, DEFAULT_COORDINATE, PLAYER_MISSILE_PIXIE);
-	int counterMissile = 70;
+
+	int numberOfLives = 10;// this variable holds the total number of lives of the ship
 
 	while (window.isOpen())
 	{
@@ -72,25 +77,21 @@ int main()
 				}
 			}
 		}
-		if (!isAlien)
-		{
-			//counterMissile += 50;
-			alienMissile.setPosition(army.getAlienX() - 10, army.getAlienY() + 50);
-			isAlien = true;
-		}
-		else if (alienMissile.getPixieY()>=WINDOW_HEIGHT)
-		{
-			isAlien = false;
-		}
-
-		FloatRect missileAlienBounds = alienMissile.getSprite().getGlobalBounds();
-		FloatRect shipBounds = ship.getSprite().getGlobalBounds();
-		if (shipBounds.intersects(missileAlienBounds))
-		{
-			isAlien = false;
-			cout << "SHIP HIT!!!!!CAREFUL MOVE!!!\n\n";
-		}
 		
+		// this condition checks to see if the linked list is empty 
+		// which means that the user killed the whole army
+		if (army.isListEmpty())
+		{
+			cout << "YOU WONNNN!!!\n\n";
+			exit(0);
+		}
+		// collecting the coordinate of an alien in the army
+		missileCoordinateX = army.getAlienX() - 10;
+		missileCoordinateY = army.getAlienY() + 50;
+
+		// calling the function responsible of shooting missiles to the ship
+		shootingMissiles(isAlien, alienMissile, missileCoordinateX,missileCoordinateY, numberOfLives, ship);
+
 		//===========================================================
 		// Everything from here to the end of the loop is where you put your
 		// code to produce ONE frame of the animation. The next iteration of the loop will
@@ -112,21 +113,18 @@ int main()
 		army.drawList(window);
 
 		// this two variables are created so that we can learn from them if the missile hits the alien
-		FloatRect missileBounds = missile.getSprite().getGlobalBounds();
-		FloatRect enemyBounds = alien.getSprite().getGlobalBounds();
+		//FloatRect missileBounds = missile.getSprite().getGlobalBounds();
+		//FloatRect enemyBounds = alien.getSprite().getGlobalBounds();
 
 		// draw the ship on top of background 
 		ship.drawPixie(window);
-
+		// check if the army reached the ship level
 		army.checkShipY(ship);
-
-
-		//army.launchMissile(window, alienMissile);
+		// make the missile shot by the army move
 		alienMissile.move(0,DISTANCE);
+		// draw the missile thrown by the army on the screen
 		alienMissile.drawPixie(window);
 
-
-		//army.shootMissile(3, missile, window);
 		// this condition is for when the missile is in flight to move it up
 		if (isMissileInFlight)
 		{
@@ -148,7 +146,6 @@ int main()
 				cout << "HIT\n\n";
 				isMissileInFlight = false;
 			}
-			
 				missile.drawPixie(window);// Draw the missile,
 		}
 

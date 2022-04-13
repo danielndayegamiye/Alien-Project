@@ -73,23 +73,46 @@ void moveShip(Pixie& ship)
 	}
 }
 
-void moveAlien(Pixie& alien, bool& isLimit) 
+/*
+*  shootingMissiles - This function is called to handle the missile shot by the army
+
+*  INPUT: The ship pixie is passed.  
+*		  The boolean isAlien is passed by reference
+*		  The integers xPosition and yPosition holds the position of the alien to fire the missile.
+*		  The integer numberOfLives holding the number of lives for the ship
+*		  The alienMissile pixie is passed
+*  RETURN: None
+*/
+void shootingMissiles(bool& isAlien, Pixie& alienMissile, int xPosition, int yPosition, int& numberOfLives, Pixie& ship)
 {
-	int alienX = static_cast<int>(alien.getSprite().getPosition().x); // this variable holds the position of the alien 
-
-		//This condition checks to see if the position is less than 0 and the alien goes to the left
-	if (alienX > 0 && !isLimit)
-		alien.move(-ALIEN_DISTANCE, 0);//this moves the alien to the left
-	else
+	// this if block checks to see if there is a missile thrown by an alien on the screen
+	if (!isAlien)
 	{
-		//when the alien reachs 0, it goes back until it reaches the other edge
-		isLimit = true; //This becomes true until the alien hits the other edge of the screen
-		//This condition check to see if the alien reached the far right edge so it can go back to the left
-		if (alienX < (WINDOW_WIDTH - 35))
-			alien.move(ALIEN_DISTANCE, 0);
-		else
-			isLimit = false; // this boolean is set to false in case the alien hits the right edge
-
+		// setting the position of the missile according to the position of the alien
+		alienMissile.setPosition(xPosition, yPosition);
+		isAlien = true;// there is now a missile on the screen
+	}
+	else if (alienMissile.getPixieY() >= WINDOW_HEIGHT)
+	{
+		// setting the boolean to false meaning that the missile is off-screen
+		isAlien = false;
+	}
+	// this two objects holds the bounds of the ship and the missile thrown by the alien
+	FloatRect missileAlienBounds = alienMissile.getSprite().getGlobalBounds();
+	FloatRect shipBounds = ship.getSprite().getGlobalBounds();
+	// this if block statement checks to see if the ship was hit by the missile 
+	if (shipBounds.intersects(missileAlienBounds))
+	{
+		// the missile disappears from the screen
+		isAlien = false;
+		// the number of lives reduce and display a message telling the player that he was hit
+		numberOfLives--;
+		cout << "SHIP HIT!!!!!CAREFUL MOVE!!!\n\n";
+	}
+	// the user does not have anymore life to spend and the game is over
+	else if (numberOfLives < 1)
+	{
+		cout << "YOU LOSER!!!!\n\n";
+		exit(0);
 	}
 }
-

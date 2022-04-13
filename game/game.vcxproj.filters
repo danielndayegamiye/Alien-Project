@@ -27,6 +27,9 @@
     <ClCompile Include="AlienArmy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Alien.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="alien.bmp">

@@ -38,4 +38,4 @@ const float ALIEN_DISTANCE = 3.5f;// when the alien moves it moves 4 pixels at a
 // Game Functions
 void moveShip(Sprite& ship); 
 void moveShip(Pixie& ship);
-void moveAlien(Pixie& alien, bool& isLimit);
+void shootingMissiles(bool& isAlien, Pixie& alienMissile, int x, int y, int& numberOfLives, Pixie& ship);
